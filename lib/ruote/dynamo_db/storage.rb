@@ -102,6 +102,43 @@ module Ruote
       # * An array of documents
       #
       def get_many(type, key=nil, opts={})
+        keys = key ? Array(key) : nil
+
+        if opts[:limit] && !opts[:limit].nil?
+          if keys && keys.first.is_a?(String)
+            items = @table.items.where(:wfid).in(Array(key)).and("type").equals(type)
+          else
+            items = @table.items.where("type").equals(type).limit(opts[:limit])
+          end
+        else
+          if keys && keys.first.is_a?(String)
+            items = @table.items.where(:wfid).in(Array(key)).and("type").equals(type)
+          else
+            items = @table.items.where("type").equals(type)
+          end
+        end
+        
+        if !items.nil? && !items.empty?
+          if opts[:count]
+            # TODO - should this be length, or count - when count could be another request
+            return items.count
+          else
+            return 0
+          end
+        end
+
+        #not supporting sorting yet...
+        # now comes client side order...ugh
+
+        docs = items.collect{|d| Rufus::Json.decode(d[:doc])}
+        
+        #return only those documents filter by a regexp
+        if keys && keys.first.is_a?(Regexp)
+          docs.select {|d| keys.find {|k| k.match(doc["_id"])}}
+        else
+          docs
+        end
+
       end
       
       # Return a list of ids for the given document type
