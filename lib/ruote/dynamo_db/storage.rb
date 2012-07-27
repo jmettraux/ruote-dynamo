@@ -40,7 +40,10 @@ module Ruote
         items = @table.items.query(:hash_value => doc[_id],
            :range_value => doc["type"],
            :select => doc['_rev'])
-        items.each(&:delete) unless items.nil? || items.empty?
+        unless items.nil? || items.empty?
+          items.each do |i|
+            i.delete(:if => {:_rev < new_revision})
+          end
         nil #success is nil, WTF?
       end
       
