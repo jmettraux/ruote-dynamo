@@ -13,6 +13,7 @@ module Ruote
       attribute :dynamo_db
 
       def initialize(connection, options={})
+      end
       # returns:
       # * true if the document has been deleted from the store
       # * a document when the rev has changed
