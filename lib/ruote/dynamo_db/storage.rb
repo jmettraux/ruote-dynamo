@@ -10,8 +10,6 @@ module Ruote
     class Storage
       include Ruote::StorageBase
 
-      attribute :dynamo_db
-
       def initialize(connection, table_name_prefix, options={})
         @connection = connection
         @table = connection.tables["#{table_prefix}.documents"].load_schema
