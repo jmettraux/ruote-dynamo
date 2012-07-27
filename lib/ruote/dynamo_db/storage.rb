@@ -19,6 +19,29 @@ module Ruote
       # * a document when the rev has changed
       # * nil when successfully stored
       def put(doc, opts = {})
+        if doc['rev']
+          document = get(doc['type'], doc['_id'])
+        end
+        return true unless document
+        return document if document['_rev'] != doc['_rev']
+        
+        new_revision = doc['_rev'].to_i + 1
+        #TODO add error handling if create fails
+        @table.items.create('ide' => doc['_id'],
+          'rev' => new_revision,
+          'typ' => doc['type'],
+          'doc' => Rufus::Json.encode(doc),
+          'wfid' => extract_wfid(doc),
+          'participant_name' => doc['participant_name'])
+
+        # delete all items it the database whose doc 'typ'
+        # is the same as doc, whose 'ide' is the same as 'doc['_id'],
+        # and whose revision is less that the old revision
+        items = @table.items.query(:hash_value => doc[_id],
+           :range_value => doc["type"],
+           :select => doc['_rev'])
+        items.each(&:delete) unless items.nil? || items.empty?
+        nil #success is nil, WTF?
       end
       
       # get a document by document type and key (_id)
@@ -83,6 +106,13 @@ module Ruote
       #
       def purge_type!(type)
       end
+
+      protected
+      def extract_wfid(doc)
+        doc['wfid'] || (doc['fei'] ? doc['fei']['wfid'] : nil)
+      end
+
+
     end
   end
 end
