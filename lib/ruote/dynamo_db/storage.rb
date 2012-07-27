@@ -12,7 +12,9 @@ module Ruote
 
       attribute :dynamo_db
 
-      def initialize(connection, options={})
+      def initialize(connection, table_name_prefix, options={})
+        @connection = connection
+        @table = connection.tables["#{table_prefix}.documents"].load_schema
       end
       # returns:
       # * true if the document has been deleted from the store
