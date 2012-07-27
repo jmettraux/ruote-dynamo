@@ -63,6 +63,25 @@ module Ruote
       # * nil when successfully removed
       #
       def delete(doc)
+        unless doc['_rev']
+          raise ArgumentError.new('no _rev for doc')
+        end
+
+        items = @table.items.query(:hash_value => doc['_id'],
+          :typ => doc['type']).where(:rev).equals(doc['_rev'])
+        count = 0;
+        unless items.nil? || items.empty?
+          items.each do |i|
+            # TODO handle delete errors
+            i.delete
+            count += 1
+          end
+        end
+        
+        if count < 1
+          return get(doc['type'], doc['_id']) || true
+        end
+        nil #Who returns nil of success?
       end
 
 
