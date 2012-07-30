@@ -66,7 +66,7 @@ module Ruote
       # get a document by document type and key (_id)
       def get(type,key)
         document = @table.items.query(:hash_value => key,
-          :typ => type)
+          :range_value => type).first
         document ? Rufus::Json.decode(document[:doc]) : nil
       end
 
