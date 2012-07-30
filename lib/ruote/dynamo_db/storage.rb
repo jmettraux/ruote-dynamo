@@ -47,9 +47,9 @@ module Ruote
       def put(doc, opts = {})
         if doc['_rev']
           document = get(doc['type'], doc['_id'])
+          return true unless document
+          return document if document['_rev'] != doc['_rev']
         end
-        return true unless document
-        return document if document['_rev'] != doc['_rev']
         
         new_revision = doc['_rev'].to_i + 1
         #TODO add error handling if create fails
