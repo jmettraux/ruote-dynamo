@@ -131,7 +131,7 @@ module Ruote
         #TODO, support skip
         raise "Does not support :skip options" unless opts[:skip].nil?
 
-        if !opts[:limit].nil? && !opts[:limit].empty? && opts[:limit].is_a?(Integer)
+        if !opts[:limit].nil? && opts[:limit].is_a?(Integer)
           docs = if keys && keys.first.is_a?(String)
                    @table.items.where(:typ).equals(type).and(:wfid).in(keys).limit(opts[:limit])
                  else
