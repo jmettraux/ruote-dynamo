@@ -4,10 +4,7 @@ require 'ruote/dynamo_db/version'
 module Ruote
   module DynamoDB
 
-    SCHEMA = {
-      :has_key => {:ide => :string},
-      :range_key = {:typ => :string }
-    }
+    SCHEMA = {:has_key => {:ide => :string}, :range_key => {:typ => :string}}
 
     def self.create_table(table_prefix, connection, re_create=false, table_name='documents')
       connection.tables.create("#{table_prefix}.documents", 10, 5, SCHEMA)
@@ -44,12 +41,15 @@ module Ruote
         # is the same as doc, whose 'ide' is the same as 'doc['_id'],
         # and whose revision is less that the old revision
         items = @table.items.query(:hash_value => doc[_id],
-           :range_value => doc["type"],
-           :select => doc['_rev'])
+                                   :range_value => doc["type"],
+                                   :select => doc['_rev'])
+        
         unless items.nil? || items.empty?
-          items.each do |i|
-            i.delete(:if => {:_rev < new_revision})
-          end
+          items.each do|i|
+            if i[:rev] < new_revision
+              i.delete
+            end
+        end
         nil #success is nil, WTF?
       end
       
@@ -110,23 +110,23 @@ module Ruote
       def get_many(type, key=nil, opts={})
         # TODO, refactor
         keys = key ? Array(key) :nil
-        if !opts[:count].nil? && !opts[:count].empty? && opts[:count].is_a? Integer
-         if keys && keys.first.is_a?(String)
-           @table.items.where(:typ).equals(type).and(:wfid).in(keys).count
-         else
-           @table.items.where(:typ).equals(type).count
-         end
+        if !opts[:count].nil? && !opts[:count].empty? && opts[:count].is_a?(Integer)
+          if keys && keys.first.is_a?(String)
+            @table.items.where(:typ).equals(type).and(:wfid).in(keys).count
+          else
+            @table.items.where(:typ).equals(type).count
+          end
         end
 
         #TODO, support skip
         raise "Does not support :skip options" unless opts[:skip].nil?
 
-        if !opts[:limit].nil? && !opts[:limit].empty? && opts[:limit].is_a? Integer
+        if !opts[:limit].nil? && !opts[:limit].empty? && opts[:limit].is_a?(Integer)
           docs = if keys && keys.first.is_a?(String)
-                    @table.items.where(:typ).equals(type).and(:wfid).in(keys).limit(opts[:limit])
-                  else
-                    @table.items.where(:typ).equals(type).limit(opts[:limit])
-                  end
+                   @table.items.where(:typ).equals(type).and(:wfid).in(keys).limit(opts[:limit])
+                 else
+                   @table.items.where(:typ).equals(type).limit(opts[:limit])
+                 end
           sort_items_by_ide_and_rev!(items, opts[:descending])
         end
 
@@ -213,3 +213,5 @@ module Ruote
     end
   end
 end
+end
+
