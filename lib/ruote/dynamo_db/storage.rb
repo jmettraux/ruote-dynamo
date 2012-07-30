@@ -45,7 +45,7 @@ module Ruote
       # * a document when the rev has changed
       # * nil when successfully stored
       def put(doc, opts = {})
-        if doc['rev']
+        if doc['_rev']
           document = get(doc['type'], doc['_id'])
         end
         return true unless document
