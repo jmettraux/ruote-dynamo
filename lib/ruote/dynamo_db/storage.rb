@@ -4,7 +4,7 @@ require 'ruote/dynamo_db/version'
 module Ruote
   module DynamoDB
 
-    SCHEMA = {:has_key => {:ide => :string}, :range_key => {:typ => :string}}
+    SCHEMA = {:hash_key => {:ide => :string}, :range_key => {:typ => :string}}
 
     def self.create_table(connection, table_prefix, recreate = false)
       table_name = "#{table_prefix}.documents"
