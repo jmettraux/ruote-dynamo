@@ -11,12 +11,26 @@ module Ruote
       if recreate
         table = connection.tables[table_name]
         # connection always returns a table, even if it doesn't exist
-        table.delete if table.exists?
-        sleep(3)
+        begin 
+        if table.exists?
+          table_exists = true
+          table.delete 
+          while table.status == :deleting
+            sleep(1)
+          end
+        end
+        rescue AWS::DynamoDB::Errors::ResourceNotFoundException => e
+          if table_exists
+            $stdout << "Table #{table_name} has been deleted"
+          else
+            $stdout << "Table #{table_name} does not exist"
+          end
+        end
       end
-      connection.tables.create(table_name, 10, 5, SCHEMA)
-      # TODO, handle creating database better, it's slow...check maybe the status
-      sleep = 3
+      table = connection.tables.create(table_name, 10, 5, SCHEMA)
+      while table.status == :creating
+        sleep(1)
+      end
     end
 
     class Storage
