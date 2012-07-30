@@ -112,15 +112,15 @@ module Ruote
 
         if opts[:limit] && !opts[:limit].nil?
           if keys && keys.first.is_a?(String)
-            items = @table.items.where(:wfid).in(Array(key)).and("type").equals(type)
+            items = @table.items.where(:wfid).in(Array(key)).and(:typ).equals(type)
           else
             items = @table.items.where("type").equals(type).limit(opts[:limit])
           end
         else
           if keys && keys.first.is_a?(String)
-            items = @table.items.where(:wfid).in(Array(key)).and("type").equals(type)
+            items = @table.items.where(:wfid).in(Array(key)).and(:typ).equals(type)
           else
-            items = @table.items.where("type").equals(type)
+            items = @table.items.where(:typ).equals(type)
           end
         end
         
