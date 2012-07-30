@@ -22,7 +22,7 @@ module Ruote
     class Storage
       include Ruote::StorageBase
 
-      def initialize(connection, table_name, options={})
+      def initialize(connection, table_prefix, options={})
         @connection = connection
         @table = connection.tables["#{table_prefix}.documents"].load_schema
       end
