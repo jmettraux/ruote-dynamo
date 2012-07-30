@@ -53,7 +53,7 @@ module Ruote
         
         new_revision = doc['_rev'].to_i + 1
         #TODO add error handling if create fails
-        @table.items.create('ide' => doc['_id'],
+        values = {'ide' => doc['_id'],
           'rev' => new_revision,
           'typ' => doc['type'],
           'doc' => Rufus::Json.encode(doc),
