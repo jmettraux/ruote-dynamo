@@ -14,9 +14,10 @@ module Ruote
         begin 
         if table.exists?
           table_exists = true
-          table.delete 
+          table.delete
+          # Dynamo is slow 
           while table.status == :deleting
-            sleep(1)
+            sleep(3)
           end
         end
         rescue AWS::DynamoDB::Errors::ResourceNotFoundException => e
@@ -28,8 +29,9 @@ module Ruote
         end
       end
       table = connection.tables.create(table_name, 10, 5, SCHEMA)
+      # Dynamo is slow
       while table.status == :creating
-        sleep(1)
+        sleep(3)
       end
     end
 
