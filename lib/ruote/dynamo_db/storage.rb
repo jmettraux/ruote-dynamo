@@ -56,9 +56,18 @@ module Ruote
         values = {'ide' => doc['_id'],
           'rev' => new_revision,
           'typ' => doc['type'],
-          'doc' => Rufus::Json.encode(doc),
-          'wfid' => extract_wfid(doc),
-          'participant_name' => doc['participant_name'])
+          'doc' => Rufus::Json.encode(doc)}
+        wfid = extract_wfid(doc)
+
+        if wfid
+          values['wfid'] = wfid
+        end
+
+        unless doc['participant_name'].nil?
+          values['participant_name'] = doc['participant_name']
+        end
+
+        @table.items.create(values)
 
         # delete all items it the database whose doc 'typ'
         # is the same as doc, whose 'ide' is the same as 'doc['_id'],
