@@ -148,6 +148,7 @@ module Ruote
       # Return a list of ids for the given document type
       #
       def ids(type)
+        @table.items.where(:typ).equals(type).select(:ide).uniq.sort
       end
 
       # Removes all msgs, schedules, errors, expressions and workitems.
