@@ -6,8 +6,12 @@ module Ruote
 
     SCHEMA = {:has_key => {:ide => :string}, :range_key => {:typ => :string}}
 
-    def self.create_table(table_prefix, connection, re_create=false, table_name='documents')
-      connection.tables.create("#{table_prefix}.documents", 10, 5, SCHEMA)
+    def self.create_table(connection, table_prefix, recreate = false)
+      table_name = "#{table_prefix}.documents"
+      if recreate
+        connection.tables[table_name].delete
+      end
+      connection.tables.create(table_name, 10, 5, SCHEMA)
     end
 
     class Storage
