@@ -72,7 +72,7 @@ module Ruote
         # delete all items it the database whose doc 'typ'
         # is the same as doc, whose 'ide' is the same as 'doc['_id'],
         # and whose revision is less that the old revision
-        items = @table.items.query(:hash_value => doc[_id],
+        items = @table.items.query(:hash_value => doc["_id"],
                                    :range_value => doc["type"],
                                    :select => doc['_rev'])
         
