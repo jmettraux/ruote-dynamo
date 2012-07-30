@@ -9,9 +9,14 @@ module Ruote
     def self.create_table(connection, table_prefix, recreate = false)
       table_name = "#{table_prefix}.documents"
       if recreate
-        connection.tables[table_name].delete
+        table = connection.tables[table_name]
+        # connection always returns a table, even if it doesn't exist
+        table.delete if table.exists?
+        sleep(3)
       end
       connection.tables.create(table_name, 10, 5, SCHEMA)
+      # TODO, handle creating database better, it's slow...check maybe the status
+      sleep = 3
     end
 
     class Storage
