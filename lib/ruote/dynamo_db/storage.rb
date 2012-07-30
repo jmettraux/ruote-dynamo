@@ -45,10 +45,11 @@ module Ruote
                                    :select => doc['_rev'])
         
         unless items.nil? || items.empty?
-          items.each do|i|
+          items.each do |i|
             if i[:rev] < new_revision
               i.delete
             end
+          end
         end
         nil #success is nil, WTF?
       end
@@ -213,5 +214,5 @@ module Ruote
     end
   end
 end
-end
+
 
