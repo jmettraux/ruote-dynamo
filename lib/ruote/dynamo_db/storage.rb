@@ -108,43 +108,45 @@ module Ruote
       # * An array of documents
       #
       def get_many(type, key=nil, opts={})
-        keys = key ? Array(key) : nil
-
-        if opts[:limit] && !opts[:limit].nil?
-          if keys && keys.first.is_a?(String)
-            items = @table.items.where(:wfid).in(Array(key)).and(:typ).equals(type)
-          else
-            items = @table.items.where("type").equals(type).limit(opts[:limit])
-          end
-        else
-          if keys && keys.first.is_a?(String)
-            items = @table.items.where(:wfid).in(Array(key)).and(:typ).equals(type)
-          else
-            items = @table.items.where(:typ).equals(type)
-          end
-        end
-        
-        if !items.nil? && !items.empty?
-          if opts[:count]
-            # TODO - should this be length, or count - when count could be another request
-            return items.count
-          else
-            return 0
-          end
+        # TODO, refactor
+        keys = key ? Array(key) :nil
+        if !opts[:count].nil? && !opts[:count].empty? && opts[:count].is_a? Integer
+         if keys && keys.first.is_a?(String)
+           @table.items.where(:typ).equals(type).and(:wfid).in(keys).count
+         else
+           @table.items.where(:typ).equals(type).count
+         end
         end
 
-        #not supporting sorting yet...
-        # now comes client side order...ugh
+        #TODO, support skip
+        raise "Does not support :skip options" unless opts[:skip].nil?
 
-        docs = items.collect{|d| Rufus::Json.decode(d[:doc])}
+        if !opts[:limit].nil? && !opts[:limit].empty? && opts[:limit].is_a? Integer
+          docs = if keys && keys.first.is_a?(String)
+                    @table.items.where(:typ).equals(type).and(:wfid).in(keys).limit(opts[:limit])
+                  else
+                    @table.items.where(:typ).equals(type).limit(opts[:limit])
+                  end
+          sort_items_by_ide_and_rev!(items, opts[:descending])
+        end
+
+        #sort again, but only by :ide
+        docs = docs.each_with_object({}) { |doc, h|
+          h[doc[:ide]] = doc
+        }.values.sort_by { |h|
+          h[:ide]
+        }
+        docs = opts[:descending] == true ? docs.reverse : docs
+
+        #expand the json
+        docs = docs.collect{ |d| Rufus::Json.decode(d[:doc]) }
         
-        #return only those documents filter by a regexp
+        # select the only those docs, that match the regex by _id
         if keys && keys.first.is_a?(Regexp)
-          docs.select {|d| keys.find {|k| k.match(doc["_id"])}}
+          docs.select { |doc| keys.find { |key| key.match(doc['_id']) } }
         else
           docs
         end
-
       end
       
       # Return a list of ids for the given document type
@@ -188,6 +190,26 @@ module Ruote
       end
 
 
+      def sort_items_by_ide_and_rev!(items, order)
+        # TODO - refactor
+        items.sort do |x,y|
+          if order[:descending]
+            if x[:ide] < y[:ide] && x[:rev] < y[:rev]
+              -1
+            elsif x[:ide] > y[:ide] && x[:rev] > y[:rev]
+              1
+            else 0
+            end
+          else
+            if x[:ide] > y[:ide] && x[:rev] > y[:rev]
+              -1
+            elsif x[:ide] < y[:ide] && x[:rev] < y[:rev]
+              1
+            else 0
+            end
+          end
+        end
+      end
     end
   end
 end
