@@ -179,6 +179,7 @@ module Ruote
       # Clean the store for the given document type
       #
       def purge_type!(type)
+        @table.where(:typ).equals(type).delete
       end
 
       protected
