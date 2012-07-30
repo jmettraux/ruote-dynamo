@@ -2,7 +2,7 @@ require 'ruote/storage/base'
 require 'ruote/dynamo_db/version'
 
 module Ruote
-  module DynamoBD
+  module DynamoDB
 
     SCHEMA = {
       :has_key => {:ide => :string},
