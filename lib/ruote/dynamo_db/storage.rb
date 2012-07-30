@@ -3,8 +3,12 @@ require 'ruote/dynamo_db/version'
 
 module Ruote
   module DynamoBD
-    def self.create_table(connection, re_create=false, table_name='documents')
-      
+    def self.create_table(table_prefix, connection, re_create=false, table_name='documents')
+      schema = {
+        :has_key => {:ide => :string},
+        :range_key = {:typ => :string }
+      }
+      connection.tables.create("#{table_prefix}.documents", 10, 5, schema)
     end
 
     class Storage
