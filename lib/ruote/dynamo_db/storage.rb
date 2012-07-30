@@ -173,6 +173,7 @@ module Ruote
       # Add a new document type to the store. Some storages might need it.
       #
       def add_type(type)
+        # like sequel storage, we are donig nothing
       end
       
       # Clean the store for the given document type
