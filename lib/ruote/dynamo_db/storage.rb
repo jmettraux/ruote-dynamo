@@ -90,7 +90,8 @@ module Ruote
       def get(type,key)
         document = @table.items.query(:hash_value => key,
           :range_value => type).first
-        document ? Rufus::Json.decode(document[:doc]) : nil
+        #TODO - sort, and return in rev
+        document ? Rufus::Json.decode(document.attributes[:doc]) : nil
       end
 
       # Delete a document
