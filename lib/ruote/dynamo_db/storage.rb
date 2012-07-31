@@ -153,9 +153,9 @@ module Ruote
         keys = key ? Array(key) :nil
         if !opts[:count].nil? && !opts[:count].empty? && opts[:count].is_a?(Integer)
           if keys && keys.first.is_a?(String)
-            @table.items.where(:typ).equals(type).and(:wfid).in(keys).count
+            @table.items.where(:typ => type).and(:wfid).in(*keys).count
           else
-            @table.items.where(:typ).equals(type).count
+            @table.items.where(:typ => type).count
           end
         end
 
@@ -164,9 +164,9 @@ module Ruote
 
         #TODO support :limit
         docs = if keys && keys.first.is_a?(String)
-                 @table.items.where(:typ).equals(type).and(:wfid).in(keys)
+                 @table.items.where(:typ => type).and(:wfid).in(*keys)
                else
-                 @table.items.where(:typ).equals(type)
+                 @table.items.where(:typ => type)
                end
         sort_docs_by_ide_and_rev!(docs, opts[:descending])
 
@@ -233,9 +233,9 @@ module Ruote
       end
 
 
-      def sort_docs_by_ide_and_rev!(items, order)
         # TODO - refactor
-        items.sort do |x,y|
+      def sort_docs_by_ide_and_rev!(docs, order)
+        docs.sort do |x,y|
           x_ide, x_rev = x.attributes[:ide], x.attributes[:rev]
           y_ide, y_rev = y.attributes[:ide], y.attributes[:rev]
           if order
