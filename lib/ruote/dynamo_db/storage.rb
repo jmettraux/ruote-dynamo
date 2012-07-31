@@ -22,9 +22,9 @@ module Ruote
         end
         rescue AWS::DynamoDB::Errors::ResourceNotFoundException => e
           if table_exists
-            $stdout << "Table #{table_name} has been deleted"
+            $stdout << "Table #{table_name} has been deleted\n"
           else
-            $stdout << "Table #{table_name} does not exist"
+            $stdout << "Table #{table_name} does not exist\n"
           end
         end
       end
