@@ -85,8 +85,10 @@ module Ruote
           end
         end
 
+        # taken from Ruote::Sequel, but this doesn't do anything
+        # keeping, just in case
         if opts[:update_rev]
-          doc['_rev'] = nrev
+          doc['_rev'] = new_revision
         end
         nil #success is nil, WTF?
       end
