@@ -113,7 +113,7 @@ module Ruote
         end
 
         items = @table.items.query(:hash_value => doc['_id'],
-          :typ => doc['type'])
+                                   :range_value => doc['type'])
         count = 0;
         items.each do |i|
           # TODO handle delete errors
