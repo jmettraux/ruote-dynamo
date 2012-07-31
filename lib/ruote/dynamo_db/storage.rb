@@ -227,17 +227,19 @@ module Ruote
       def sort_items_by_ide_and_rev!(items, order)
         # TODO - refactor
         items.sort do |x,y|
+          x_ide, x_rev = x.attributes[:ide], x.attributes[:rev]
+          y_ide, y_rev = y.attributes[:ide], y.attributes[:rev]
           if order[:descending]
-            if x[:ide] < y[:ide] && x[:rev] < y[:rev]
+            if x_ide < y_ide && x_rev < y_rev
               -1
-            elsif x[:ide] > y[:ide] && x[:rev] > y[:rev]
+            elsif x_ide > y_ide && x_rev > y_rev
               1
             else 0
             end
           else
-            if x[:ide] > y[:ide] && x[:rev] > y[:rev]
+            if x_ide > y_ide && x_rev > y_rev
               -1
-            elsif x[:ide] < y[:ide] && x[:rev] < y[:rev]
+            elsif x_ide < y_ide && x_rev < y_rev
               1
             else 0
             end
