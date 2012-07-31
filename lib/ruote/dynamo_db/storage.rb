@@ -237,7 +237,7 @@ module Ruote
         items.sort do |x,y|
           x_ide, x_rev = x.attributes[:ide], x.attributes[:rev]
           y_ide, y_rev = y.attributes[:ide], y.attributes[:rev]
-          if order[:descending]
+          if order
             if x_ide < y_ide && x_rev < y_rev
               -1
             elsif x_ide > y_ide && x_rev > y_rev
