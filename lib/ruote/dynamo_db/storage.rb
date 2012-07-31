@@ -165,15 +165,18 @@ module Ruote
         end
 
         #sort again, but only by :ide
-        docs = docs.each_with_object({}) { |doc, h|
-          h[doc[:ide]] = doc
-        }.values.sort_by { |h|
-          h[:ide]
-        }
+        values = {}
+        docs.each do |doc, h|
+          values[doc.attributes[:ide].to_i] = doc
+        end
+
+        docs = values.sort_by{|ide, doc| ide}
         docs = opts[:descending] == true ? docs.reverse : docs
 
         #expand the json
-        docs = docs.collect{ |d| Rufus::Json.decode(d[:doc]) }
+        docs = docs.collect do |ide, doc|
+          Rufus::Json.decode(doc.attributes[:doc])
+        end
         
         # select the only those docs, that match the regex by _id
         if keys && keys.first.is_a?(Regexp)
