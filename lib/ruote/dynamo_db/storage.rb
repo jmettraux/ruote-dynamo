@@ -75,8 +75,7 @@ module Ruote
         # is the same as doc, whose 'ide' is the same as 'doc['_id'],
         # and whose revision is less that the old revision
         items = @table.items.query(:hash_value => doc["_id"],
-                                   :range_value => doc["type"],
-                                   :select => doc['_rev'])
+                                   :range_value => doc["type"])
         items.each do |i|
           if i.attributes[:rev].to_i < new_revision
             i.delete
