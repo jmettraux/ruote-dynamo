@@ -160,14 +160,13 @@ module Ruote
         #TODO, support skip
         raise "Does not support :skip options" unless opts[:skip].nil?
 
-        if !opts[:limit].nil? && opts[:limit].is_a?(Integer)
-          docs = if keys && keys.first.is_a?(String)
-                   @table.items.where(:typ).equals(type).and(:wfid).in(keys).limit(opts[:limit])
-                 else
-                   @table.items.where(:typ).equals(type).limit(opts[:limit])
-                 end
-          sort_items_by_ide_and_rev!(items, opts[:descending])
-        end
+        #TODO support :limit
+        docs = if keys && keys.first.is_a?(String)
+                 @table.items.where(:typ).equals(type).and(:wfid).in(keys)
+               else
+                 @table.items.where(:typ).equals(type)
+               end
+        sort_docs_by_ide_and_rev!(docs, opts[:descending])
 
         #sort again, but only by :ide
         values = {}
@@ -232,7 +231,7 @@ module Ruote
       end
 
 
-      def sort_items_by_ide_and_rev!(items, order)
+      def sort_docs_by_ide_and_rev!(items, order)
         # TODO - refactor
         items.sort do |x,y|
           x_ide, x_rev = x.attributes[:ide], x.attributes[:rev]
