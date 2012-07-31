@@ -58,7 +58,10 @@ module Ruote
         values = {'ide' => doc['_id'],
           'rev' => new_revision,
           'typ' => doc['type'],
-          'doc' => Rufus::Json.encode(doc)}
+          'doc' => Rufus::Json.encode(doc.merge(
+              "_rev" => new_revision,
+              "put_at" => Route.now_to_utc_s))}
+
         wfid = extract_wfid(doc)
 
         if wfid
