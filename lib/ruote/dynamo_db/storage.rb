@@ -77,14 +77,12 @@ module Ruote
         items = @table.items.query(:hash_value => doc["_id"],
                                    :range_value => doc["type"],
                                    :select => doc['_rev'])
-        
-        unless items.nil? || items.empty?
-          items.each do |i|
-            if i[:rev] < new_revision
-              i.delete
-            end
+        items.each do |i|
+          if i.attributes[:rev].to_i < new_revision
+            i.delete
           end
         end
+
         nil #success is nil, WTF?
       end
       
