@@ -113,11 +113,11 @@ module Ruote
         end
 
         items = @table.items.query(:hash_value => doc['_id'],
-          :typ => doc['type']).where(:rev).equals(doc['_rev'])
+          :typ => doc['type'])
         count = 0;
-        unless items.nil? || items.empty?
-          items.each do |i|
-            # TODO handle delete errors
+        items.each do |i|
+          # TODO handle delete errors
+          if i.attributes[:rev].to_i == doc['_rev']
             i.delete
             count += 1
           end
