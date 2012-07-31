@@ -83,6 +83,9 @@ module Ruote
           end
         end
 
+        if opts[:update_rev]
+          doc['_rev'] = nrev
+        end
         nil #success is nil, WTF?
       end
       
