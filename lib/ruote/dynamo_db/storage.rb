@@ -195,6 +195,7 @@ module Ruote
       # Return a list of ids for the given document type
       #
       def ids(type)
+        #FIX - this doesn't work at all
         @table.items.where(:typ).equals(type).select(:ide).uniq.sort
       end
 
