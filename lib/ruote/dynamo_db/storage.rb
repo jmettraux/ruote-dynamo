@@ -237,8 +237,8 @@ module Ruote
         # TODO - refactor
       def sort_docs_by_ide_and_rev!(docs, order)
         docs.sort do |x,y|
-          x_ide, x_rev = x.attributes[:ide], x.attributes[:rev]
-          y_ide, y_rev = y.attributes[:ide], y.attributes[:rev]
+          x_ide, x_rev = x.attributes[:ide], x.attributes[:rev].to_i
+          y_ide, y_rev = y.attributes[:ide], y.attributes[:rev].to_i
           if order
             if x_ide < y_ide && x_rev < y_rev
               -1
