@@ -65,6 +65,14 @@ module Ruote
         @connection = connection
         @table = connection.tables["#{table_prefix}.documents"].load_schema
       end
+
+      def put_msg(action,options)
+        # like the sequel storage, overriding, and hence simplifying
+        # inserting a message
+        create_item(prepare_msg_document(action,options),1)
+        nil
+      end
+
       # returns:
       # * true if the document has been deleted from the store
       # * a document when the rev has changed
@@ -77,25 +85,8 @@ module Ruote
         end
         
         new_revision = doc['_rev'].to_i + 1
-        #TODO add error handling if create fails
-        values = {'ide' => doc['_id'],
-          'rev' => new_revision,
-          'typ' => doc['type'],
-          'doc' => Rufus::Json.encode(doc.merge(
-              "_rev" => new_revision,
-              "put_at" => Ruote.now_to_utc_s))}
-
-        wfid = extract_wfid(doc)
-
-        if wfid
-          values['wfid'] = wfid
-        end
-
-        unless doc['participant_name'].nil?
-          values['participant_name'] = doc['participant_name']
-        end
-
-        @table.items.create(values)
+ 
+        create_item(doc, new_revision)
 
         # delete all items it the database whose doc 'typ'
         # is the same as doc, whose 'ide' is the same as 'doc['_id'],
@@ -285,6 +276,28 @@ module Ruote
             end
           end
         end
+      end
+
+      def create_item(doc,revision)
+        #TODO add error handling if create fails
+        values = {'ide' => doc['_id'],
+          'rev' => new_revision,
+          'typ' => doc['type'],
+          'doc' => Rufus::Json.encode(doc.merge(
+           "_rev" => revision
+           "put_at" => Ruote.now_to_utc_s))}
+
+        wfid = extract_wfid(doc)
+
+        if wfid
+          values['wfid'] = wfid
+        end
+
+        unless doc['participant_name'].nil?
+          values['participant_name'] = doc['participant_name']
+        end
+
+        @table.items.create(values)
       end
     end
   end
