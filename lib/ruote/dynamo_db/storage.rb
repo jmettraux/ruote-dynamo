@@ -69,7 +69,7 @@ module Ruote
       def put_msg(action,options)
         # like the sequel storage, overriding, and hence simplifying
         # inserting a message
-        create_item(prepare_msg_document(action,options),1)
+        create_item(prepare_msg_doc(action,options),1)
         nil
       end
 
