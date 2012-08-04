@@ -177,25 +177,26 @@ module Ruote
         raise "Does not support :skip options" unless opts[:skip].nil?
 
         #TODO support :limit
-        docs = if keys && keys.first.is_a?(String)
-                 @table.items.where(:typ => type).and(:wfid).in(*keys)
-               else
-                 @table.items.where(:typ => type)
-               end
-        sort_docs_by_ide_and_rev!(docs, opts[:descending])
+        doc_selector = if keys && keys.first.is_a?(String)
+                         @table.items.where(:typ => type).and(:wfid).in(*keys)
+                       else
+                         @table.items.where(:typ => type)
+                       end
 
-        #sort again, but only by :ide
-        values = {}
-        docs.each do |doc, h|
-          values[doc.attributes[:ide].to_i] = doc
+        docs = []
+        # load them all in memory, to reduce db hits
+        doc_selector.select do |item_data|
+          docs << item_data.attributes
         end
 
-        docs = values.sort_by{|ide, doc| ide}
+        sort_docs_by_ide_and_rev!(docs, opts[:descending])
+
+        docs = docs.sort_by{|doc| doc["ide"]}
         docs = opts[:descending] == true ? docs.reverse : docs
 
         #expand the json
-        docs = docs.collect do |ide, doc|
-          Rufus::Json.decode(doc.attributes[:doc])
+        docs = docs.collect do |doc|
+          Rufus::Json.decode(doc['doc'])
         end
         
         # select the only those docs, that match the regex by _id
@@ -248,8 +249,10 @@ module Ruote
         # TODO - refactor
       def sort_docs_by_ide_and_rev!(docs, order)
         docs.sort do |x,y|
-          x_ide, x_rev = x.attributes[:ide], x.attributes[:rev].to_i
-          y_ide, y_rev = y.attributes[:ide], y.attributes[:rev].to_i
+          x_ide = x['ide']
+          x_rev = x['rev'].to_i
+          y_ide = y['ide']
+          y_rev = y['rev'].to_i
           if order
             if x_ide < y_ide && x_rev < y_rev
               -1
