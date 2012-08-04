@@ -249,7 +249,9 @@ module Ruote
       # Clean the store for the given document type
       #
       def purge_type!(type)
-        @table.where(:typ).equals(type).delete
+        @table.items.where(:typ => type).each{|i|i.delete}
+      end
+
       def shutdown
         # seems to be require for testing, but there is no
         # such thing as a dynamo db shutdown
