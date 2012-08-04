@@ -230,6 +230,7 @@ module Ruote
       def clear
         name = @table.name
         @table.delete
+        # FIX, get the read and write access for recreating
         @connection.tables.create(name, 10, 5, SCHEMA)
       end
       
