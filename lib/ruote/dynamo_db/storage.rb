@@ -165,7 +165,7 @@ module Ruote
       def get_many(type, key=nil, opts={})
         # TODO, refactor
         keys = key ? Array(key) :nil
-        if !opts[:count].nil? && !opts[:count].empty? && opts[:count].is_a?(Integer)
+        if opts[:count]
           if keys && keys.first.is_a?(String)
             @table.items.where(:typ => type).and(:wfid).in(*keys).count
           else
