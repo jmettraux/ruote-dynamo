@@ -222,6 +222,9 @@ module Ruote
         @table.items.where(:typ).equals(type).select(:ide).uniq.sort
       end
 
+      #TODO - decide on if clearing or purging means all removing
+      # the participant lists
+
       # Removes all msgs, schedules, errors, expressions and workitems.
       #
       # It's used mostly when testing workflows, usually when cleaning the
