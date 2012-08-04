@@ -284,8 +284,8 @@ module Ruote
           'rev' => new_revision,
           'typ' => doc['type'],
           'doc' => Rufus::Json.encode(doc.merge(
-           "_rev" => revision
-           "put_at" => Ruote.now_to_utc_s))}
+             "_rev" => revision,
+             "put_at" => Ruote.now_to_utc_s))}
 
         wfid = extract_wfid(doc)
 
