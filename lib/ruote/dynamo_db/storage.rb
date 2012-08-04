@@ -27,7 +27,7 @@ module Ruote
 
     SCHEMA = {:hash_key => {:ide => :string}, :range_key => {:typ => :string}}
 
-    def self.create_table(connection, table_prefix, recreate = false, options => {})
+    def self.create_table(connection, table_prefix, recreate = false, options = {})
       table_name = "#{table_prefix}.documents"
       if recreate
         table = connection.tables[table_name]
