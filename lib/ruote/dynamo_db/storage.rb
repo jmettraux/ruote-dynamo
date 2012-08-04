@@ -226,9 +226,12 @@ module Ruote
       #
       def clear
         name = @table.name
+        options = {
+          :read_capacity_units => @table.read_capacity_units,
+          :write_capacity_units => @table.write_capacity_units}
         @table.delete
         # FIX, get the read and write access for recreating
-        @connection.tables.create(name, 10, 5, SCHEMA)
+        create_table(@connection, name, true, options)
       end
       
       # Clean the store
