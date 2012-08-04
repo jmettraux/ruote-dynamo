@@ -27,7 +27,7 @@ module Ruote
 
     SCHEMA = {:hash_key => {:ide => :string}, :range_key => {:typ => :string}}
 
-    def self.create_table(connection, table_prefix, recreate = false)
+    def self.create_table(connection, table_prefix, recreate = false, options => {})
       table_name = "#{table_prefix}.documents"
       if recreate
         table = connection.tables[table_name]
@@ -49,7 +49,9 @@ module Ruote
           end
         end
       end
-      table = connection.tables.create(table_name, 10, 5, SCHEMA)
+      read_capacity = options[:read_capacity_units] || 10
+      write_capacity = options[:write_capacity_units] || 5
+      table = connection.tables.create(table_name, read_capacity, write_capacity, SCHEMA)
       # Dynamo is slow
       while table.status == :creating
         sleep(3)
