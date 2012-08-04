@@ -216,28 +216,10 @@ module Ruote
         ids.uniq.sort
       end
 
-      #TODO - decide on if clearing or purging means all removing
-      # the participant lists
-
-      # Removes all msgs, schedules, errors, expressions and workitems.
-      #
-      # It's used mostly when testing workflows, usually when cleaning the
-      # engine/storage before a workflow run.
-      #
-      def clear
-        name = @table.name
-        options = {
-          :read_capacity_units => @table.read_capacity_units,
-          :write_capacity_units => @table.write_capacity_units}
-        @table.delete
-        # FIX, get the read and write access for recreating
-        create_table(@connection, name, true, options)
-      end
-      
       # Clean the store
       #
       def purge!
-        clear
+        @table.items.each {|i| i.delete}
       end
       
       # Add a new document type to the store. Some storages might need it.
