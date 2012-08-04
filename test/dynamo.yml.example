@@ -1,0 +1,3 @@
+access_key_id: blabshsnhshsnh
+secret_access_key: snttsnthsnh
+table_prefix: ruote_dynamo_db.test
