@@ -185,8 +185,14 @@ module Ruote
 
         docs = []
         # load them all in memory, to reduce db hits
-        doc_selector.select do |item_data|
-          docs << item_data.attributes
+        if opts[:limit]
+          doc_selector.select(:limit => opts[:limit]) do |item_data|
+            docs << item_data.attributes
+          end
+        else
+          doc_selector.select do |item_data|
+            docs << item_data.attributes
+          end
         end
 
         sort_docs_by_ide_and_rev!(docs, opts[:descending])
