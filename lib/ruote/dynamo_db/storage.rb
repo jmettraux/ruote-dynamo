@@ -167,9 +167,9 @@ module Ruote
         keys = key ? Array(key) :nil
         if opts[:count]
           if keys && keys.first.is_a?(String)
-            @table.items.where(:typ => type).and(:wfid).in(*keys).count
+            return @table.items.where(:typ => type).and(:wfid).in(*keys).count
           else
-            @table.items.where(:typ => type).count
+            return @table.items.where(:typ => type).count
           end
         end
 
