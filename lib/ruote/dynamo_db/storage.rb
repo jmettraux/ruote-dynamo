@@ -218,8 +218,11 @@ module Ruote
       # Return a list of ids for the given document type
       #
       def ids(type)
-        #FIX - this doesn't work at all
-        @table.items.where(:typ).equals(type).select(:ide).uniq.sort
+        ids = []
+        @table.items.where(:typ => type).select(:ide) do |doc|
+          ids << doc.attributes["ide"]
+        end
+        ids.uniq.sort
       end
 
       #TODO - decide on if clearing or purging means all removing
