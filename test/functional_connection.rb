@@ -28,7 +28,13 @@ unless $dynamo_db
 
   if ARGV.include?('-l') || ARGV.include?('--l')
     FileUtils.rm('debug.log') rescue nil
-    logger = Logger.new('debug.log')
+    file = if File.exists?('debug.log')
+             File.open('debug.log', File::WRONLY | File::APPEND)
+           else
+             File.open('debug.log', File::WRONLY | File::APPEND | File::CREAT)
+           end
+
+    logger = Logger.new(file)
   elsif ARGV.include?('-ls') || ARGV.include?('--ls')
     logger = Logger.new($stdout)
   end
