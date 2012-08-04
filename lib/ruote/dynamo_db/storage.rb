@@ -250,6 +250,9 @@ module Ruote
       #
       def purge_type!(type)
         @table.where(:typ).equals(type).delete
+      def shutdown
+        # seems to be require for testing, but there is no
+        # such thing as a dynamo db shutdown
       end
 
       protected
