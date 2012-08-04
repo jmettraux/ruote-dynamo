@@ -281,7 +281,7 @@ module Ruote
       def create_item(doc,revision)
         #TODO add error handling if create fails
         values = {'ide' => doc['_id'],
-          'rev' => new_revision,
+          'rev' => revision,
           'typ' => doc['type'],
           'doc' => Rufus::Json.encode(doc.merge(
              "_rev" => revision,
