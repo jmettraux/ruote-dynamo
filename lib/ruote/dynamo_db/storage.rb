@@ -103,6 +103,7 @@ module Ruote
         # keeping, just in case
         if opts[:update_rev]
           doc['_rev'] = new_revision
+          return doc
         end
         nil #success is nil, WTF?
       end
