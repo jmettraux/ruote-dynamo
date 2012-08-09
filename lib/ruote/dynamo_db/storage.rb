@@ -171,7 +171,6 @@ module Ruote
         #TODO, support skip
         raise "Does not support :skip options" unless opts[:skip].nil?
 
-        #TODO support :limit
         doc_selector = if keys && keys.first.is_a?(String)
                          @table.items.where(:typ => type).and(:wfid).in(*keys)
                        else
