@@ -1,6 +1,6 @@
-# Ruote DynamoDB
+# Ruote Dynamo
 
-Ruote DynamoDB is a storage implementation of [Ruote](http://ruote.rubyforge.org/).
+Ruote Dynamo is a [Amazon DynamoDB](http://aws.amazon.com/dynamodb/) storage implementation of [Ruote](http://ruote.rubyforge.org/).
 
 # Status
 The code is under heavily development, and not production ready. All development
