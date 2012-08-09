@@ -168,23 +168,27 @@ module Ruote
           end
         end
 
-        #TODO, support skip
-        raise "Does not support :skip options" unless opts[:skip].nil?
-
         doc_selector = if keys && keys.first.is_a?(String)
                          @table.items.where(:typ => type).and(:wfid).in(*keys)
                        else
                          @table.items.where(:typ => type)
                        end
 
+        # Dynamo DB has no ability to skip a number of items,
+        # so we manually implement skip
         docs = []
         # load them all in memory, to reduce db hits
         if opts[:limit]
-          doc_selector.select(:limit => opts[:limit]) do |item_data|
+          limit = if opts[:skip] then opts[:limit] + opts[:skip]
+            else opts[:limit]
+            end
+          doc_selector.select(:limit => limit) do |item_data|
+            break if opts[:skip] && docs.length < opts[:skip]
             docs << item_data.attributes
           end
         else
           doc_selector.select do |item_data|
+            break if opts[:skip] && docs.length < opts[:skip]
             docs << item_data.attributes
           end
         end
