@@ -289,6 +289,9 @@ module Ruote
 
         wfid = extract_wfid(doc)
 
+        
+        # these conditionals are here, because
+        # DynamoDB doesn't support nil or empty strings
         if wfid
           values['wfid'] = wfid
         end
