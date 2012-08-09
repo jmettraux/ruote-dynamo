@@ -85,8 +85,8 @@ module Ruote
         end
         
         new_revision = doc['_rev'].to_i + 1
- 
-        create_item(doc, new_revision)
+
+        create_item(doc, new_revision, opts[:update_rev])
 
         # delete all items it the database whose doc 'typ'
         # is the same as doc, whose 'ide' is the same as 'doc['_id'],
@@ -99,12 +99,6 @@ module Ruote
           end
         end
 
-        # taken from Ruote::Sequel, but this doesn't do anything
-        # keeping, just in case
-        if opts[:update_rev]
-          doc['_rev'] = new_revision
-          return doc
-        end
         nil #success is nil, WTF?
       end
       
@@ -278,17 +272,18 @@ module Ruote
         end
       end
 
-      def create_item(doc,revision)
+      def create_item(doc,revision,update_rev = false)
         #TODO add error handling if create fails
+        doc = doc.send(
+          update_rev ? :merge! : :merge,
+          {'_rev' => revision, 'put_at' => Ruote.now_to_utc_s})
+
         values = {'ide' => doc['_id'],
-          'rev' => revision,
+          'rev' => doc["_rev"],
           'typ' => doc['type'],
-          'doc' => Rufus::Json.encode(doc.merge(
-             "_rev" => revision,
-             "put_at" => Ruote.now_to_utc_s))}
+          'doc' => Rufus::Json.encode(doc)}
 
         wfid = extract_wfid(doc)
-
         
         # these conditionals are here, because
         # DynamoDB doesn't support nil or empty strings
