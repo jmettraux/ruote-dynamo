@@ -49,7 +49,8 @@ unless $dynamo_db
 
   Ruote::DynamoDB.create_table($dynamo_db,
                                $table_prefix,
-                               true)
+                               true,
+                               {:read_capacity_units => 20, :write_capacity_units => 20 })
 end
 
 
