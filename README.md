@@ -56,7 +56,7 @@ connection = AWS::DynamoDB.new(:access_key_id => "an access key from amazon",
 storage = Ruote::DynamoDB::Storage.new(connection,
                                        "prefix_to_documents_table")
 
-dashboard Route::Dashboard.new(Route::Worker.new(storage))
+dashboard = Route::Dashboard.new(Route::Worker.new(storage))
 ```
 
 
