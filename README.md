@@ -1,4 +1,4 @@
-# route-dynamo
+# ruote-dynamo
 
 Ruote Dynamo is a [Amazon DynamoDB](http://aws.amazon.com/dynamodb/) storage implementation of [Ruote](http://ruote.rubyforge.org/).
 
@@ -7,7 +7,7 @@ The code is under heavily development, and not production ready. All development
 will be published on the master branch until the code reaches stability, where it
 will be tagged, and development started on topic branches.
 
-The code is a rough port of the [route-sequel](https://github.com/jmettraux/ruote-sequel)
+The code is a rough port of the [ruote-sequel](https://github.com/jmettraux/ruote-sequel)
 storage implementation
 
 Despite the presence of a gemspec, the code has not been published as a gem
@@ -18,24 +18,24 @@ Create the `documents` table on which the connection depends:
 Creating a DynamoDB tables works as follows.
 ``` ruby
 require 'aws-sdk'
-require 'route'
-require 'ruoute/dynamo_db/storage'
+require 'ruote'
+require 'ruote/dynamo_db/storage'
 
 AWS.config(:access_key_id => "an access key from amazon",
            :secret_access_key => "a secret access key from amazon")
 
 connection = AWS::DynamoDB.new(:access_key_id => "an access key from amazon",
-		              :secret_access_key => "a secret access key from amazon")
+		                       :secret_access_key => "a secret access key from amazon")
 
 recreate_db = true # will delete the current documents table
 
 # 10 and 5 are actually the default values respectively, for the 
 # table read and write capacities.
 Ruote::DynamoDB.create_table(connection,
-                               "prefix_to_documents_table",
-                               recreate_db,
-                               {:read_capacity_units => 10,
-                                :write_capacity_units => 5})
+                             "prefix_to_documents_table",
+                             recreate_db,
+                             {:read_capacity_units => 10,
+                              :write_capacity_units => 5})
 
 ```
 
@@ -44,14 +44,14 @@ Ccreate a connection to a `documents` table with the given prefix below.
 
 ``` ruby
 require 'aws-sdk'
-require 'route'
-require 'ruoute/dynamo_db/storage'
+require 'ruote'
+require 'ruote/dynamo_db/storage'
 
 AWS.config(:access_key_id => "an access key from amazon",
            :secret_access_key => "a secret access key from amazon")
 
 connection = AWS::DynamoDB.new(:access_key_id => "an access key from amazon",
-		              :secret_access_key => "a secret access key from amazon")
+		                       :secret_access_key => "a secret access key from amazon")
 
 storage = Ruote::DynamoDB::Storage.new(connection,
                                        "prefix_to_documents_table")
@@ -62,7 +62,7 @@ dashboard = Route::Dashboard.new(Route::Worker.new(storage))
 
 # TODO
 * Optimize the lookups as much as possible, moving from scan operations to query
-operations. 
+operations.
 * Refactor the code removing redundancies
 * Unit tests
 
